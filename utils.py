@@ -1,8 +1,8 @@
 from API_manager import HeadHunterAPI
 
 
-def calc_salary(salary_min, salary_max, currency):
-    '''Возвращает среднее значение ЗП, если  определены мин и макс. Если нет - возвращает то, ктр определено'''
+def calc_salary(salary_min: int, salary_max: int, currency: str) -> float:
+    """Возвращает среднее значение ЗП, если  определены мин и макс. Если нет - возвращает то, ктр определено"""
     if salary_min == 0:
         return exchange_currency(salary_max, currency)
     elif salary_max == 0:
@@ -12,8 +12,8 @@ def calc_salary(salary_min, salary_max, currency):
         return exchange_currency(avr_original, currency)
 
 
-def exchange_currency(amount, from_):
-    '''Возвращает размер ЗП с учетом пересчета в рубли по текущему курсу'''
+def exchange_currency(amount: int, from_: str) -> float:
+    """Возвращает размер ЗП с учетом пересчета в рубли по текущему курсу"""
     # url = f"https://api.apilayer.com/exchangerates_data/convert?to=RUB&from={from_}&amount={amount}"
     # headers = {"apikey": CURRENCY_API_KEY}
 
@@ -44,26 +44,36 @@ def exchange_currency(amount, from_):
             return amount * 0.0083
 
 
-def set_vacancies_list(employers) -> list:
+def set_vacancies_list(employers: list):    # -> tuple[list[tuple]]:
+    """Преобразовывает данные, полученные по API и возвращает два списка кортежей:
+    с данными по вакансиям и данными по работодателям"""
     vacancies_list = []
+    employers_list = []
     for i in HeadHunterAPI().get_vacancies(employers):
         vacancy = [
-                   int(i['id']),
-                   i['name'],
-                   i['area']['name'],
-                   i['employer']['id'],
-                   i['alternate_url'],
-                   int(i['salary']['from'] if i['salary']['from'] else 0),
-                   int(i['salary']['to'] if i['salary']['to'] else 0),
-                   i['salary']['currency'],
-                   calc_salary(
-                               int(i['salary']['from'] if i['salary']['from'] is not None else 0),
-                               int(i['salary']['to'] if i['salary']['to'] is not None else 0),
-                               i['salary']['currency']
-                               ),
-                   i['snippet']['responsibility'].strip() if i['snippet']['responsibility'] else None,
-                   i['snippet']['requirement'].strip() if i['snippet']['requirement'] else None
-                   ]
+            int(i['id']),
+            i['name'],
+            i['area']['name'],
+            i['employer']['id'],
+            i['alternate_url'],
+            int(i['salary']['from']) if i['salary']['from'] else 0,
+            int(i['salary']['to']) if i['salary']['to'] else 0,
+            i['salary']['currency'],
+            calc_salary(
+                int(i['salary']['from'] if i['salary']['from'] is not None else 0),
+                int(i['salary']['to'] if i['salary']['to'] is not None else 0),
+                i['salary']['currency']
+            ),
+            i['snippet']['responsibility'].strip() if i['snippet']['responsibility'] else None,
+            i['snippet']['requirement'].strip() if i['snippet']['requirement'] else None
+        ]
+        employer = [
+            int(i['employer']['id']),
+            i['employer']['name'],
+            i['employer']['alternate_url'],
+            i['employer']['vacancies_url'],
+            1 if i['employer']['trusted'] else 0
+        ]
         vacancies_list.append(tuple(vacancy))
-    return vacancies_list
-
+        employers_list.append(tuple(employer))
+    return vacancies_list, list(set(employers_list))
