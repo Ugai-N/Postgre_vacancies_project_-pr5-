@@ -1,4 +1,11 @@
+import json
+import os
+
+import requests
+
 from API_manager import HeadHunterAPI
+
+CURRENCY_API_KEY = os.getenv('CURRENCY_API_KEY')
 
 
 def calc_salary(salary_min: int, salary_max: int, currency: str) -> float:
@@ -14,37 +21,37 @@ def calc_salary(salary_min: int, salary_max: int, currency: str) -> float:
 
 def exchange_currency(amount: int, from_: str) -> float:
     """Возвращает размер ЗП с учетом пересчета в рубли по текущему курсу"""
-    # url = f"https://api.apilayer.com/exchangerates_data/convert?to=RUB&from={from_}&amount={amount}"
-    # headers = {"apikey": CURRENCY_API_KEY}
+    url = f"https://api.apilayer.com/exchangerates_data/convert?to=RUB&from={from_}&amount={amount}"
+    headers = {"apikey": CURRENCY_API_KEY}
 
     if amount >= 0:
-        # response = requests.get(url, headers=headers)
-        # status_code = response.status_code
-        # data = json.loads(response.text)
-        # return int(data['result'])
-        if from_ == 'AZN':
-            return amount * 57.25
-        elif from_ == 'BYR':
-            return amount * 38.56
-        elif from_ == 'EUR':
-            return amount * 106.68
-        elif from_ == 'USD':
-            return amount * 99.25
-        elif from_ == 'GEL':
-            return amount * 37.37
-        elif from_ == 'KGS':
-            return amount * 1.11
-        elif from_ == 'KZT':
-            return amount * 0.22
-        elif from_ == 'RUR':
-            return amount
-        elif from_ == 'UAH':
-            return amount * 2.65
-        elif from_ == 'UZS':
-            return amount * 0.0083
+        response = requests.get(url, headers=headers)
+        status_code = response.status_code
+        data = json.loads(response.text)
+        return int(data['result'])
+        # if from_ == 'AZN':
+        #     return amount * 57.25
+        # elif from_ == 'BYR':
+        #     return amount * 38.56
+        # elif from_ == 'EUR':
+        #     return amount * 106.68
+        # elif from_ == 'USD':
+        #     return amount * 99.25
+        # elif from_ == 'GEL':
+        #     return amount * 37.37
+        # elif from_ == 'KGS':
+        #     return amount * 1.11
+        # elif from_ == 'KZT':
+        #     return amount * 0.22
+        # elif from_ == 'RUR':
+        #     return amount
+        # elif from_ == 'UAH':
+        #     return amount * 2.65
+        # elif from_ == 'UZS':
+        #     return amount * 0.0083
 
 
-def set_vacancies_list(employers: list):    # -> tuple[list[tuple]]:
+def set_vacancies_list(employers: list):  # -> tuple[list[tuple]]:
     """Преобразовывает данные, полученные по API и возвращает два списка кортежей:
     с данными по вакансиям и данными по работодателям"""
     vacancies_list = []
