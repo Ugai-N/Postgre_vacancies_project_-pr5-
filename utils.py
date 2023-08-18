@@ -19,7 +19,7 @@ def calc_salary(salary_min: int, salary_max: int, currency: str) -> float:
         return exchange_currency(avr_original, currency)
 
 
-def exchange_currency(amount: int, from_: str) -> float:
+def exchange_currency(amount: float, from_: str) -> float:
     """Возвращает размер ЗП с учетом пересчета в рубли по текущему курсу"""
     url = f"https://api.apilayer.com/exchangerates_data/convert?to=RUB&from={from_}&amount={amount}"
     headers = {"apikey": CURRENCY_API_KEY}
@@ -51,7 +51,7 @@ def exchange_currency(amount: int, from_: str) -> float:
         #     return amount * 0.0083
 
 
-def set_vacancies_list(employers: list):  # -> tuple[list[tuple]]:
+def set_vacancies_list(employers: list) -> tuple[list[tuple], list[tuple]]:
     """Преобразовывает данные, полученные по API и возвращает два списка кортежей:
     с данными по вакансиям и данными по работодателям"""
     vacancies_list = []
