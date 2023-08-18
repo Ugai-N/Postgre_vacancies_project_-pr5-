@@ -1,8 +1,20 @@
 import sqlite3
 
 import psycopg2
-
+from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
+from psycopg2 import sql
 from utils import set_vacancies_list
+
+
+def create_database(database, password):
+    connection = psycopg2.connect(host='localhost', database='postgres', user='postgres', password=password)
+    connection.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+    cur = connection.cursor()
+    try:
+        cur.execute(sql.SQL("CREATE DATABASE {}").format(sql.Identifier(database)))
+        print(f'База данных {database} создана')
+    except sqlite3.DatabaseError as error:
+        print("Error: ", error)
 
 
 class DBcreator:
