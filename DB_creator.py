@@ -7,6 +7,7 @@ from utils import set_vacancies_list
 
 
 def create_database(database, password):
+    """Фунуция для создания БД с названием аргумента database"""
     connection = psycopg2.connect(host='localhost', database='postgres', user='postgres', password=password)
     connection.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
     cur = connection.cursor()
