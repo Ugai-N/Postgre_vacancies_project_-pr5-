@@ -31,20 +31,20 @@ class DBcreator:
         """Создает таблицу для работы с вакансиями"""
         with self.connection.cursor() as cursor:
             try:
-                cursor.execute(f"""CREATE TABLE {self.vacancies_table} (
-                                                                        vacancy_id serial PRIMARY KEY,
-                                                                        hh_vacancy_id int NOT NULL,
-                                                                        title varchar NOT NULL,
-                                                                        area varchar NOT NULL,
-                                                                        employer_id int NOT NULL,
-                                                                        url varchar NOT NULL,
-                                                                        salary_min int,
-                                                                        salary_max int,
-                                                                        currency varchar,
-                                                                        salary_avr_rub int,
-                                                                        description varchar,
-                                                                        requirements varchar
-                                                                        );"""
+                cursor.execute("""CREATE TABLE {} (
+                                                   vacancy_id serial PRIMARY KEY,
+                                                   hh_vacancy_id int NOT NULL,
+                                                   title varchar NOT NULL,
+                                                   area varchar NOT NULL,
+                                                   employer_id int NOT NULL,
+                                                   url varchar NOT NULL,
+                                                   salary_min int,
+                                                   salary_max int,
+                                                   currency varchar,
+                                                   salary_avr_rub int,
+                                                   description varchar,
+                                                   requirements varchar
+                                                   );""".format(self.vacancies_table)
                                )
                 print(f'Таблица {self.vacancies_table} создана')
             except sqlite3.DatabaseError as error:
@@ -54,14 +54,14 @@ class DBcreator:
         """Создает таблицу для работы с компаниями-работодателями"""
         with self.connection.cursor() as cursor:
             try:
-                cursor.execute(f"""CREATE TABLE {self.employers_table} (
-                                                                        employer_id serial PRIMARY KEY,
-                                                                        title varchar NOT NULL,
-                                                                        url varchar NOT NULL,
-                                                                        vacancies_url varchar NOT NULL,
-                                                                        trusted int NOT NULL,
-                                                                        CONSTRAINT chk_trusted CHECK (trusted IN (1, 0))
-                                                                        );"""
+                cursor.execute("""CREATE TABLE {} (
+                                                   employer_id serial PRIMARY KEY,
+                                                   title varchar NOT NULL,
+                                                   url varchar NOT NULL,
+                                                   vacancies_url varchar NOT NULL,
+                                                   trusted int NOT NULL,
+                                                   CONSTRAINT chk_trusted CHECK (trusted IN (1, 0))
+                                                   );""".format(self.employers_table)
                                )
                 print(f'Таблица {self.employers_table} создана')
             except sqlite3.DatabaseError as error:
@@ -71,20 +71,20 @@ class DBcreator:
         """заполняет таблицу данными о вакансиях"""
         with self.connection.cursor() as cursor:
             try:
-                cursor.executemany(f"""INSERT into {self.vacancies_table} (
-                                                                           hh_vacancy_id, 
-                                                                           title, 
-                                                                           area, 
-                                                                           employer_id, 
-                                                                           url, 
-                                                                           salary_min, 
-                                                                           salary_max, 
-                                                                           currency, 
-                                                                           salary_avr_rub, 
-                                                                           description, 
-                                                                           requirements
-                                                                           ) 
-                                   VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""",
+                cursor.executemany("""INSERT into {} (
+                                                      hh_vacancy_id, 
+                                                      title, 
+                                                      area, 
+                                                      employer_id, 
+                                                      url, 
+                                                      salary_min, 
+                                                      salary_max, 
+                                                      currency, 
+                                                      salary_avr_rub, 
+                                                      description, 
+                                                      requirements
+                                                      ) 
+                                   VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""".format(self.vacancies_table),
                                    self.vacancies
                                    )
                 print(f'Таблица {self.vacancies_table} заполнена данными')
@@ -95,14 +95,14 @@ class DBcreator:
         """заполняет таблицу данными о компаниях-работодателях"""
         with self.connection.cursor() as cursor:
             try:
-                cursor.executemany(f"""INSERT into {self.employers_table} (
-                                                                           employer_id, 
-                                                                           title, 
-                                                                           url, 
-                                                                           vacancies_url, 
-                                                                           trusted
-                                                                           ) 
-                                   VALUES (%s, %s, %s, %s, %s)""",
+                cursor.executemany("""INSERT into {} (
+                                                      employer_id, 
+                                                      title, 
+                                                      url, 
+                                                      vacancies_url, 
+                                                      trusted
+                                                      ) 
+                                   VALUES (%s, %s, %s, %s, %s)""".format(self.employers_table),
                                    self.employers
                                    )
                 print(f'Таблица {self.employers_table} заполнена данными')
