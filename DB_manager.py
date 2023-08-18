@@ -8,10 +8,10 @@ class DBManager(DBcreator):
         """получает список всех компаний и количество вакансий у каждой компании"""
         with self.connection.cursor() as cursor:
             cursor.execute(
-                           f"""SELECT {self.employers_table}.title, COUNT (*)
-                           FROM {self.vacancies_table}
-                           JOIN {self.employers_table} USING (employer_id)
-                           GROUP BY {self.employers_table}.title;"""
+                           """SELECT {0}.title, COUNT (*)
+                           FROM {1}
+                           JOIN {0} USING (employer_id)
+                           GROUP BY {0}.title;""".format(self.employers_table, self.vacancies_table)
                            )
             rows = cursor.fetchall()
             for row in rows:
@@ -22,12 +22,12 @@ class DBManager(DBcreator):
         названия вакансии, зарплаты, региона и ссылки на вакансию"""
         with self.connection.cursor() as cursor:
             cursor.execute(
-                           f"""SELECT {self.employers_table}.title as company_title, {self.vacancies_table}.title, 
-                           {self.vacancies_table}.salary_avr_rub, {self.vacancies_table}.area, 
-                           {self.vacancies_table}.url
-                           FROM {self.vacancies_table}
-                           JOIN {self.employers_table} USING (employer_id)
-                           ORDER BY {self.vacancies_table}.salary_avr_rub DESC;"""
+                           """SELECT {0}.title as company_title, {1}.title, 
+                           {1}.salary_avr_rub, {1}.area, 
+                           {1}.url
+                           FROM {1}
+                           JOIN {0} USING (employer_id)
+                           ORDER BY {1}.salary_avr_rub DESC;""".format(self.employers_table, self.vacancies_table)
                            )
             rows = cursor.fetchall()
             for row in rows:
@@ -37,8 +37,8 @@ class DBManager(DBcreator):
         """получает среднюю зарплату по вакансиям"""
         with self.connection.cursor() as cursor:
             cursor.execute(
-                           f"""SELECT AVG(salary_avr_rub)
-                           FROM {self.vacancies_table};"""
+                           """SELECT AVG(salary_avr_rub)
+                           FROM {};""".format(self.vacancies_table)
                            )
             rows = cursor.fetchall()
             for row in rows:
@@ -48,11 +48,11 @@ class DBManager(DBcreator):
         """получает список всех вакансий, у которых зарплата выше средней по всем вакансиям"""
         with self.connection.cursor() as cursor:
             cursor.execute(
-                           f"""SELECT {self.employers_table}.title as company_title, {self.vacancies_table}.* 
-                           FROM {self.vacancies_table}
-                           JOIN {self.employers_table} USING (employer_id) 
-                           WHERE salary_avr_rub > (SELECT AVG(salary_avr_rub) FROM {self.vacancies_table})
-                           ORDER BY salary_avr_rub DESC;"""
+                           """SELECT {0}.title as company_title, {1}.* 
+                           FROM {1}
+                           JOIN {0} USING (employer_id) 
+                           WHERE salary_avr_rub > (SELECT AVG(salary_avr_rub) FROM {1})
+                           ORDER BY salary_avr_rub DESC;""".format(self.employers_table, self.vacancies_table)
                            )
             rows = cursor.fetchall()
             for row in rows:
@@ -63,11 +63,12 @@ class DBManager(DBcreator):
         в метод слова, например “python” без учета регистра"""
         with self.connection.cursor() as cursor:
             cursor.execute(
-                           f"""SELECT {self.employers_table}.title as company_title, {self.vacancies_table}.* 
-                           FROM {self.vacancies_table}
-                           JOIN {self.employers_table} USING (employer_id) 
-                           WHERE lower({self.vacancies_table}.title) LIKE '%{key.lower()}%'
+                           """SELECT {0}.title as company_title, {1}.* 
+                           FROM {1}
+                           JOIN {0} USING (employer_id) 
+                           WHERE lower({1}.title) LIKE '%{2}%'
                            ORDER BY salary_avr_rub DESC;"""
+                           .format(self.employers_table, self.vacancies_table, key.lower())
                            )
             rows = cursor.fetchall()
             for row in rows:
