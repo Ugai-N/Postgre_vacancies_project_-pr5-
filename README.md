@@ -1,3 +1,29 @@
+# Script for extracting job vacancies data from "HeadHunter" platform into Postgres DB and its filtering and sorting upon the user's query
+
+
+# For working with DB the users needs:
+* DB name,
+* id of chosen companies
+* authorization details (Postgres, https://apilayer.com/) 
+* Table name for vacancies
+* Table name for companies
+
+
+# Functions:
+
+* functions for working with API is executed in API_manager.py
+* for creating and filling in the tables a separate Class was developed within DB_creator.py
+* sorting, filtering functions are performed within the class in DB_manager.py
+* additional functions for reformatting the data, calculating the currency exchange rates are executed within utils.py
+
+# Notes:
+* data retrieval is subject to the limits set by HeadHunter platform - 2000 vacancies
+* data is dowloaded in DB in accordance to the current currency exchange rate via https://apilayer.com/
+
+
+
+
+
 # Программа, реализующая выгрузку данных с платформы "HeadHunter" в базу данных Postgres и их фильтрацию/сортировку по запросу
 
 
